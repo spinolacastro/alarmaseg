@@ -33,5 +33,5 @@ class Event(models.Model):
     delivered = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.id
+        return 'Event: {}'.format(self.id)
 

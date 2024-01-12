@@ -10,7 +10,13 @@ class DeviceAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "serial"]
 
 class NeighborhoodAdmin(admin.ModelAdmin):
-    list_display = ["name", "police", "fireemergency", "admin", "master", "device"]
+    list_display = ["name", "police", "fireemergency", "master", "device"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(admin=request.user)
 
 class NeighborInline(admin.StackedInline):
     model = Neighbor
@@ -20,9 +26,18 @@ class NeighborInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = [NeighborInline]
 
+class EventsAdmin(admin.ModelAdmin):
+    list_display = ["id", "message", "user", "timestamp", "delivered"]
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user__neighbor__neighborhood__admin=request.user)
+
 admin.site.register(Neighborhood, NeighborhoodAdmin)
 admin.site.register(Device, DeviceAdmin)
-admin.site.register(Event)
+admin.site.register(Event, EventsAdmin)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 

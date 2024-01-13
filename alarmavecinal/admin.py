@@ -25,6 +25,21 @@ class NeighborInline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = [NeighborInline]
+    add_fieldsets = (
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2'),
+            },
+        ),
+    )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(neighbor__neighborhood__admin=request.user)
 
 class EventsAdmin(admin.ModelAdmin):
     list_display = ["id", "message", "user", "timestamp", "delivered"]

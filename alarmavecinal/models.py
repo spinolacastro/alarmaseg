@@ -3,6 +3,28 @@ from django.contrib.auth.models import User, Group
 
 # Create your models here.
 
+class Country(models.Model):
+    name = models.CharField(max_length=50)
+    short_name = models.CharField(max_length=2)
+
+    def __str__(self):
+        return self.short_name
+
+class State(models.Model):
+    name = models.CharField(max_length=50)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    name = models.CharField(max_length=256)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Device(models.Model):
     name = models.CharField(max_length=256)
     serial = models.CharField(max_length=20)
@@ -24,6 +46,12 @@ class Neighborhood(models.Model):
 class Neighbor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=256)
+    address2 = models.CharField(max_length=256)
+    street_number = models.CharField(max_length=256)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
 class Event(models.Model):
     id = models.PositiveBigIntegerField(primary_key=True)
@@ -34,4 +62,3 @@ class Event(models.Model):
 
     def __str__(self):
         return 'Event: {}'.format(self.id)
-

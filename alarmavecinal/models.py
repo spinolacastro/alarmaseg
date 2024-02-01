@@ -7,6 +7,9 @@ class Country(models.Model):
     name = models.CharField(max_length=50)
     short_name = models.CharField(max_length=2)
 
+    class Meta:
+        verbose_name_plural = "Countries"
+
     def __str__(self):
         return self.short_name
 
@@ -20,6 +23,9 @@ class State(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=256)
     state = models.ForeignKey(State, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Cities"
 
     def __str__(self):
         return self.name
@@ -54,7 +60,7 @@ class Neighbor(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
 class Event(models.Model):
-    id = models.PositiveBigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     message = models.CharField(max_length=256)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)

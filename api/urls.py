@@ -10,5 +10,6 @@ app_name = 'api'
 urlpatterns = [
     path('', schema_view, name='schema'),
     path('api-token-auth/', views.obtain_auth_token),
+    path('pin/', apiviews.PinList.as_view(), name='pin-list'),
     path('users/', apiviews.UserList.as_view(), name='user-list')
 ]

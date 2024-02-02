@@ -11,7 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     user_profile = ProfileSerializer()
-    
+
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'user_profile']
@@ -21,6 +21,18 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         Profile.objects.create(user=user, **profile_data)
         return user
+
+class CreatePinSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
+
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:

@@ -34,6 +34,7 @@ class City(models.Model):
 class Device(models.Model):
     name = models.CharField(max_length=256)
     serial = models.CharField(max_length=20)
+    brand = models.CharField(max_length=40)
 
     def __str__(self):
         return self.name
@@ -49,8 +50,8 @@ class Neighborhood(models.Model):
     def __str__(self):
         return self.name
 
-class Neighbor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name="user_profile", on_delete=models.CASCADE, null=True)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=256)
     address2 = models.CharField(max_length=256)

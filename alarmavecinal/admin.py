@@ -18,13 +18,13 @@ class NeighborhoodAdmin(admin.ModelAdmin):
             return qs
         return qs.filter(admin=request.user)
 
-class NeighborInline(admin.StackedInline):
-    model = Neighbor
+class ProfileInline(admin.StackedInline):
+    model = Profile
     can_delete = False
-    verbose_name_plural = "neighbors"
+    verbose_name_plural = "profiles"
 
 class UserAdmin(BaseUserAdmin):
-    inlines = [NeighborInline]
+    inlines = [ProfileInline]
     add_fieldsets = (
         (
             None,
@@ -42,7 +42,7 @@ class UserAdmin(BaseUserAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(neighbor__neighborhood__admin=request.user)
+        return qs.filter(profile__neighborhood__admin=request.user)
 
 class EventsAdmin(admin.ModelAdmin):
     list_display = ["id", "message", "user", "timestamp", "delivered"]
@@ -51,12 +51,8 @@ class EventsAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(user__neighbor__neighborhood__admin=request.user)
+        return qs.filter(user__profile__neighborhood__admin=request.user)
 
-class NeighborInline(admin.StackedInline):
-    model = Neighbor
-    can_delete = False
-    verbose_name_plural = "neighbors"
 
 admin.site.register(Neighborhood, NeighborhoodAdmin)
 admin.site.register(Device, DeviceAdmin)

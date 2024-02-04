@@ -9,7 +9,9 @@ app_name = 'api'
 
 urlpatterns = [
     path('', schema_view, name='schema'),
-    path('api-token-auth/', views.obtain_auth_token),
-    path('pin/', apiviews.PinList.as_view(), name='pin-list'),
-    path('users/', apiviews.UserList.as_view(), name='user-list')
+    path('token/', views.obtain_auth_token),
+    path('pin/', apiviews.PinAdd.as_view(), name='pin-list'),
+    path('register/', apiviews.UserAdd.as_view(), name='user-add'),
+    path('profile/', apiviews.ProfileRetrieve.as_view(), name='user-list'),
+    path('event/', apiviews.EventList.as_view(), name='event-list')
 ]

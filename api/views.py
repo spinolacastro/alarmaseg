@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from api.serializers import UserSerializer, CreatePinSerializer, EventSerializer, ProfileSerializer
-from alarmavecinal.models import Event, Profile
+from api.serializers import *
+from alarmavecinal.models import Event, Country, State, City
 from rest_framework.parsers import JSONParser
 from django.http import Http404
 import random
@@ -19,13 +19,13 @@ class ProfileRetrieve(APIView):
 
     def get_object(self):
         try:
-            return User.objects.get(id=self.request.user.id)
-        except User.DoesNotExist:
+            return Profile.objects.get(user=self.request.user.id)
+        except Profile.DoesNotExist:
             raise Http404
     
     def get(self, request, format=None):
         profile = self.get_object()
-        serializer = UserSerializer(profile)
+        serializer = ProfileDetailSerializer(profile)
         return Response(serializer.data)
 
 class PinAdd(APIView):
@@ -60,9 +60,31 @@ class EventList(generics.ListCreateAPIView):
     permission_class = [IsAuthenticated]
 
     def get_queryset(self):
-        return Event.objects.all().filter(user__user_profile__neighborhood_id=self.request.user.user_profile.neighborhood_id)
+        return Event.objects.all().filter(
+            user__user_profile__neighborhood_id=self.request.user.user_profile.neighborhood_id)
 
     def list(self, request):
         queryset = self.get_queryset()
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+class CountryList(generics.ListAPIView):
+    serializer_class = CountrySerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Country.objects.all()
+
+class StatesList(generics.ListAPIView):
+    serializer_class = StateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return State.objects.all().filter(country=self.kwargs['country'])
+
+class CitiesList(generics.ListAPIView):
+    serializer_class = CitySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        country = self.kwargs['country']
+        state = self.kwargs['state']
+        return City.objects.all().filter(state__country_id=country).filter(state=state)

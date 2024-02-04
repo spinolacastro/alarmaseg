@@ -52,7 +52,7 @@ class Neighborhood(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name="user_profile", on_delete=models.CASCADE, null=True)
-    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, null=True)
+    neighborhood = models.ForeignKey(Neighborhood, related_name="user_neighborhood", on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=256)
     address2 = models.CharField(max_length=256)
     street_number = models.CharField(max_length=256)

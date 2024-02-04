@@ -13,5 +13,8 @@ urlpatterns = [
     path('pin/', apiviews.PinAdd.as_view(), name='pin-list'),
     path('register/', apiviews.UserAdd.as_view(), name='user-add'),
     path('profile/', apiviews.ProfileRetrieve.as_view(), name='user-list'),
-    path('event/', apiviews.EventList.as_view(), name='event-list')
+    path('event/', apiviews.EventList.as_view(), name='event-list'),
+    path('country/', apiviews.CountryList.as_view(), name='country-list'),
+    path('country/<int:country>/states/', apiviews.StatesList.as_view(), name='states-list'),
+    path('country/<int:country>/states/<int:state>/cities/', apiviews.CitiesList.as_view(), name='cities-list')
 ]
